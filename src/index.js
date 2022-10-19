@@ -22,7 +22,17 @@ function checksExistsUserAccount(request, response, next) {
 }
 
 function checksCreateTodosUserAvailability(request, response, next) {
-  
+  /* Esse middleware deve receber o usuário já dentro do request 
+  e chamar a função next apenas se esse usuário ainda estiver no
+   plano grátis e ainda não possuir 10 todos cadastrados ou se ele
+    já estiver com o plano Pro ativado.   */
+
+    const { user } = request;   
+    const plano = users.find((plano) => plano.pro === pro);
+    const todo = user.todos.map((todo) => todo.id === id);
+    if(plano === false && todo.length < 10)
+
+    return 
 }
 
 function checksTodoExists(request, response, next) {
@@ -30,9 +40,26 @@ function checksTodoExists(request, response, next) {
 }
 
 function findUserById(request, response, next) {
-  // Complete aqui
-}
+  /* Esse middleware possui um funcionamento semelhante ao middleware
+    checksExistsUserAccount mas a busca pelo usuário deve ser feita
+    através do id de um usuário passado por parâmetro na rota. Caso
+    o usuário tenha sido encontrado, o mesmo deve ser repassado para
+    dentro do request.user e a função next deve ser chamada.
+  */
 
+    const { id } = request.params;
+
+    const user = users.find((user) => user.id === id);
+
+    if(!user){      
+            
+      return response.status(404).json({error: 'User not found'})
+      
+    }
+    request.user = user
+    return next();
+
+}
 app.post('/users', (request, response) => {
   const { name, username } = request.body;
 
